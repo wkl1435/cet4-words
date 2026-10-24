@@ -294,6 +294,16 @@ a{color:var(--blue);text-decoration:none}
   </div>
   <div class="card">
     <b>设置</b>
+    <label class="f">发音方式</label>
+    <select id="setVoice">
+      <option value="auto">自动（系统语音优先，失败用在线音频）</option>
+      <option value="audio">只用在线音频（安卓推荐）</option>
+      <option value="tts">只用系统语音</option>
+    </select>
+    <div class="grid2" style="margin-top:8px">
+      <button class="btn line sm" id="btnTestVoice">测试发音</button>
+      <button class="btn line sm" id="btnVoiceHelp">没有声音？</button>
+    </div>
     <label class="f">每日新词目标（默认按日程）</label>
     <input type="number" id="setNew" min="10" max="120">
     <button class="btn line sm" style="margin-top:10px" id="btnReset">清空全部进度</button>
@@ -605,18 +615,70 @@ $('#btnQuiz').onclick = () => {
   nextQ();
 };
 
-function speak(text) {
-  if (!('speechSynthesis' in window)) { toast('当前浏览器不支持朗读'); return; }
+/* ---------- 发音：系统语音优先，失败自动切在线音频 ---------- */
+let VOICES = [];
+let ttsBroken = false;
+let audioEl = null;
+
+function refreshVoices() {
+  try { VOICES = (window.speechSynthesis && speechSynthesis.getVoices()) || []; }
+  catch (e) { VOICES = []; }
+}
+if ('speechSynthesis' in window) {
+  refreshVoices();
+  speechSynthesis.onvoiceschanged = refreshVoices;
+}
+
+function voiceMode() {
+  return (state.settings && state.settings.voiceMode) || 'auto';
+}
+
+function pickVoice() {
+  const en = VOICES.filter(v => /^en/i.test(v.lang));
+  return en.find(v => /en[-_]US/i.test(v.lang)) || en[0] || null;
+}
+
+function playOnline(word, quiet) {
   try {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(String(text).replace(/[^A-Za-z'\- ]/g, ' ').trim());
-    u.lang = 'en-US';
-    u.rate = 0.85;
-    u.pitch = 1;
-    const vs = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
-    if (vs.length) u.voice = vs.find(v => /en[-_]US/i.test(v.lang)) || vs[0];
-    speechSynthesis.speak(u);
-  } catch (e) { toast('朗读失败，可改用拼写模式'); }
+    if (audioEl) { audioEl.pause(); audioEl = null; }
+    audioEl = new Audio('https://dict.youdao.com/dictvoice?audio=' +
+      encodeURIComponent(word) + '&type=2');
+    audioEl.play().catch(() => { if (!quiet) toast('在线发音也失败了，检查一下网络'); });
+  } catch (e) { if (!quiet) toast('播放失败'); }
+}
+
+function speak(text, quiet) {
+  const clean = String(text).replace(/[^A-Za-z'\- ]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!clean) return;
+  const mode = voiceMode();
+  const noVoice = !VOICES.length;
+  if (mode === 'audio' || ttsBroken || !('speechSynthesis' in window) ||
+      (mode === 'auto' && noVoice)) {
+    return playOnline(clean, quiet);
+  }
+  try { speechSynthesis.cancel(); } catch (e) {}
+  setTimeout(() => {
+    let started = false;
+    try {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = 'en-US';
+      u.rate = 0.85;
+      u.volume = 1;
+      const v = pickVoice();
+      if (v) u.voice = v;
+      u.onstart = () => { started = true; };
+      speechSynthesis.speak(u);
+    } catch (e) {
+      if (!quiet) ttsBroken = true;
+      return playOnline(clean, quiet);
+    }
+    setTimeout(() => {
+      if (started) return;
+      if (!quiet) ttsBroken = true;
+      try { speechSynthesis.cancel(); } catch (e) {}
+      playOnline(clean, quiet);
+    }, 1200);
+  }, 70);
 }
 
 function speakId(id) { const c = BY_ID[id]; if (c) speak(c.w); }
@@ -675,7 +737,7 @@ function nextQ() {
       e.preventDefault();
       $('#qHint').textContent = `${c.w[0]}… · ${c.w.replace(/[^A-Za-z]/g, '').length} 个字母 · ${c.cn}`;
     };
-    setTimeout(() => { speak(c.w); inpL.focus(); }, 260);
+    setTimeout(() => { speak(c.w, true); inpL.focus(); }, 260);
     inpL.onkeydown = e => {
       if (e.key !== 'Enter' || Q.answered) return;
       Q.answered = true;
@@ -746,6 +808,7 @@ function renderMe() {
   const wrong = Object.values(state.cards).reduce((a, c) => a + c.bad, 0);
   $('#mRate').textContent = answered ? `累计答题 ${answered} 次，正确率 ${Math.round((answered - wrong) / answered * 100)}%` : '还没有答题记录';
   $('#setNew').value = state.settings.newPerDay || '';
+  $('#setVoice').value = voiceMode();
 }
 
 $('#btnExport').onclick = () => {
@@ -789,6 +852,31 @@ $('#btnReset').onclick = () => {
   save(); renderToday(); renderMe(); toast('已清空');
 };
 $('#setNew').onchange = e => { state.settings.newPerDay = +e.target.value || 0; save(); };
+$('#setVoice').onchange = e => {
+  state.settings.voiceMode = e.target.value;
+  ttsBroken = false;
+  save();
+  toast(e.target.value === 'audio' ? '已切换为在线发音' : '已切换发音方式');
+};
+$('#btnTestVoice').onclick = () => {
+  ttsBroken = false;
+  speak('vocabulary');
+  setTimeout(() => {
+    toast(ttsBroken ? '系统语音不可用，已自动用在线音频' : '正在播放：vocabulary');
+  }, 1400);
+};
+$('#btnVoiceHelp').onclick = () => {
+  const lines = [
+    '安卓没有声音时，按这个顺序排查：',
+    '',
+    '1. 把「发音方式」改成「只用在线音频」，再点测试发音；',
+    '2. 确认手机媒体音量不是 0（不是铃声音量）；',
+    '3. 安卓设置 → 无障碍 → 文字转语音(TTS) → 确认已安装语音引擎；',
+    '4. 微信/QQ 内置浏览器可能缺语音能力，改用 Chrome 或 Edge 打开；',
+    '5. 在线音频需要联网，断网时只能用系统语音。'
+  ];
+  alert(lines.join(String.fromCharCode(10)));
+};
 
 /* ---------------- 初始化 ---------------- */
 fillRanges();
