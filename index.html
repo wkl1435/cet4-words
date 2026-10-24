@@ -638,13 +638,65 @@ function pickVoice() {
   return en.find(v => /en[-_]US/i.test(v.lang)) || en[0] || null;
 }
 
-function playOnline(word, quiet) {
+function playOne(url, onFail, quiet) {
   try {
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    audioEl = new Audio('https://dict.youdao.com/dictvoice?audio=' +
-      encodeURIComponent(word) + '&type=2');
-    audioEl.play().catch(() => { if (!quiet) toast('在线发音也失败了，检查一下网络'); });
-  } catch (e) { if (!quiet) toast('播放失败'); }
+    if (audioEl) { audioEl.onerror = null; audioEl.pause(); }
+    const a = new Audio();
+    a.preload = 'auto';
+    a.referrerPolicy = 'no-referrer';
+    a.src = url;
+    audioEl = a;
+    let done = false;
+    const fail = () => { if (done) return; done = true; onFail(); };
+    a.onerror = fail;
+    const p = a.play();
+    if (p && p.catch) p.catch(err => {
+      if (err && err.name === 'NotAllowedError') {
+        if (!quiet) toast('浏览器拦截了自动播放，请再点一次 🔊');
+        return;
+      }
+      fail();
+    });
+  } catch (e) { onFail(); }
+}
+
+function playWords(words, quiet) {
+  let i = 0;
+  const next = () => {
+    if (i >= words.length) return;
+    const w = words[i++];
+    const url = 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(w) + '&type=2';
+    try {
+      if (audioEl) { audioEl.onended = null; audioEl.onerror = null; audioEl.pause(); }
+      const a = new Audio();
+      a.preload = 'auto';
+      a.referrerPolicy = 'no-referrer';
+      a.src = url;
+      audioEl = a;
+      let advanced = false;
+      const go = () => { if (advanced) return; advanced = true; setTimeout(next, 110); };
+      const wd = setTimeout(go, 3000);
+      a.onended = () => { clearTimeout(wd); go(); };
+      a.onerror = () => { clearTimeout(wd); go(); };
+      const p = a.play();
+      if (p && p.catch) p.catch(() => { clearTimeout(wd); go(); });
+    } catch (e) { setTimeout(next, 60); }
+  };
+  next();
+}
+
+function playOnline(word, quiet) {
+  const text = String(word).replace(/\s+/g, ' ').trim();
+  if (!text) return;
+  const words = text.split(' ').filter(Boolean);
+  const url = 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(text) + '&type=2';
+  playOne(url, () => {
+    if (words.length > 1 && words.length <= 6) {
+      playWords(words, quiet);
+    } else if (!quiet) {
+      toast('发音加载失败：换「系统语音」或稍后再试');
+    }
+  }, quiet);
 }
 
 function speak(text, quiet) {
