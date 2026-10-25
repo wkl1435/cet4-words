@@ -1281,6 +1281,9 @@ function buildReview(E) {
     const ok = chosen === it.ans;
     const ci = it.opts[chosen] || '未作答';
     const ca = it.opts[it.ans];
+    const exp = it.type === 'vocab'
+      ? `${it.word} 意为「${ca}」。`
+      : (it.exp || '对照原文定位');
     let extra = '';
     if (it.type === 'listen') {
       extra = `<details><summary>听力原文</summary><div class="small" style="line-height:1.75;margin-top:6px">${it.text}</div></details>`;
@@ -1293,7 +1296,7 @@ function buildReview(E) {
       <div style="font-weight:600;margin:5px 0 3px;font-size:14px">${it.q}</div>
       <div class="small muted">你选：${ci}　｜　正确：${ca}</div>
       ${extra}
-      <div class="small" style="margin-top:6px;color:#444">解析：${it.exp || '对照原文定位'}</div>
+      <div class="small" style="margin-top:6px;color:#444">解析：${exp}</div>
     </div>`;
   }).join('');
 }
