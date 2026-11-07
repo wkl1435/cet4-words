@@ -7,18 +7,59 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>四级词汇 · 49 天</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>
+/* 尽早应用主题，避免暗色用户看到白屏闪烁 */
+try {
+  var _st = JSON.parse(localStorage.getItem('cet4_app_v1'));
+  var _th = _st && _st.settings && _st.settings.theme;
+  if (_th === 'dark' || _th === 'light') document.documentElement.setAttribute('data-theme', _th);
+} catch (e) {}
+</script>
 <style>
 :root{
   --navy:#1F3864; --blue:#2E5A88; --light:#E8EEF7; --bg:#F4F6FA;
-  --card:#fff; --text:#1C2433; --muted:#7A869A; --line:#E3E8F0;
+  --card:#fff; --box:#F7F9FC; --text:#1C2433; --muted:#7A869A; --line:#E3E8F0;
   --green:#2E7D5B; --amber:#B7791F; --red:#C0392B; --shadow:0 2px 12px rgba(31,56,100,.07);
+  --hd:rgba(244,246,250,.92); --nav:rgba(255,255,255,.96); --track:#EDF1F7;
+  --btn:#1F3864; --btn-fg:#fff; --sect:#2E5A88;
+  --g-bg:#E4F1EA; --g-line:#9CCDB5; --g-fg:#2E7D5B;
+  --r-bg:#FBEAE8; --r-line:#E8B4AC; --r-fg:#C0392B;
+  --a-bg:#FBF1DF; --a-fg:#B7791F;
+  color-scheme:light;
+}
+/* 暗色主题：手动指定（data-theme="dark"）或跟随系统 */
+:root[data-theme="dark"]{
+  --navy:#93B8E6; --blue:#7EA8D8; --light:#232D3B; --bg:#111620;
+  --card:#1A2130; --box:#161D29; --text:#E4EAF4; --muted:#93A0B5; --line:#2A3446;
+  --green:#6FD3A5; --amber:#E5B95E; --red:#F08D82; --shadow:0 2px 12px rgba(0,0,0,.38);
+  --hd:rgba(17,22,32,.92); --nav:rgba(20,26,36,.96); --track:#26303F;
+  --btn:#33598A; --btn-fg:#F2F6FC; --sect:#33598A;
+  --g-bg:rgba(111,211,165,.16); --g-line:rgba(111,211,165,.38); --g-fg:#6FD3A5;
+  --r-bg:rgba(240,141,130,.16); --r-line:rgba(240,141,130,.38); --r-fg:#F08D82;
+  --a-bg:rgba(229,185,94,.16); --a-fg:#E5B95E;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --navy:#93B8E6; --blue:#7EA8D8; --light:#232D3B; --bg:#111620;
+    --card:#1A2130; --box:#161D29; --text:#E4EAF4; --muted:#93A0B5; --line:#2A3446;
+    --green:#6FD3A5; --amber:#E5B95E; --red:#F08D82; --shadow:0 2px 12px rgba(0,0,0,.38);
+    --hd:rgba(17,22,32,.92); --nav:rgba(20,26,36,.96); --track:#26303F;
+    --btn:#33598A; --btn-fg:#F2F6FC; --sect:#33598A;
+    --g-bg:rgba(111,211,165,.16); --g-line:rgba(111,211,165,.38); --g-fg:#6FD3A5;
+    --r-bg:rgba(240,141,130,.16); --r-line:rgba(240,141,130,.38); --r-fg:#F08D82;
+    --a-bg:rgba(229,185,94,.16); --a-fg:#E5B95E;
+    color-scheme:dark;
+  }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   font-size:16px;line-height:1.55}
 body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
-header{position:sticky;top:0;z-index:20;background:rgba(244,246,250,.92);
+header{position:sticky;top:0;z-index:20;background:var(--hd);
   backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
 .hd{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:10px}
 .hd h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.3px}
@@ -33,26 +74,26 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 24px}
 .muted{color:var(--muted);font-size:13px}
 .small{font-size:12px}
 .btn{border:0;border-radius:12px;padding:13px 18px;font-size:15px;font-weight:600;
-  background:var(--navy);color:#fff;cursor:pointer;transition:.15s;font-family:inherit}
+  background:var(--btn);color:var(--btn-fg);cursor:pointer;transition:.15s;font-family:inherit}
 .btn:active{transform:scale(.98)}
 .btn.block{width:100%;display:block}
 .btn.ghost{background:var(--light);color:var(--navy)}
-.btn.line{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.btn.line{background:var(--card);color:var(--navy);border:1px solid var(--line)}
 .btn.sm{padding:8px 12px;font-size:13px;border-radius:10px}
 .btn:disabled{opacity:.45}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .grid2>*,.grid3>*,.grid4>*{min-width:0}
-.stat{background:#fff;border-radius:14px;padding:12px 8px;text-align:center;box-shadow:var(--shadow);min-width:0}
+.stat{background:var(--card);border-radius:14px;padding:12px 8px;text-align:center;box-shadow:var(--shadow);min-width:0}
 .stat b{display:block;font-size:22px;line-height:1.2;color:var(--navy)}
 .stat span{font-size:11px;color:var(--muted)}
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;
   background:var(--light);color:var(--blue);font-weight:600}
-.badge.g{background:#E4F1EA;color:var(--green)}
-.badge.r{background:#FBEAE8;color:var(--red)}
-.badge.a{background:#FBF1DF;color:var(--amber)}
-.bar{height:7px;background:#EDF1F7;border-radius:99px;overflow:hidden}
+.badge.g{background:var(--g-bg);color:var(--g-fg)}
+.badge.r{background:var(--r-bg);color:var(--r-fg)}
+.badge.a{background:var(--a-bg);color:var(--a-fg)}
+.bar{height:7px;background:var(--track);border-radius:99px;overflow:hidden}
 .bar > i{display:block;height:100%;background:linear-gradient(90deg,#4C7BB5,#2E5A88);border-radius:99px;transition:width .3s}
 .divider{height:1px;background:var(--line);margin:12px 0}
 /* 卡片 */
@@ -60,7 +101,7 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 24px}
 .flash .inner{position:relative;min-height:260px;transition:transform .45s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
 .flash.flipped .inner{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:22px;
+  background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:22px;
   display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
 .face.back{transform:rotateY(180deg);align-items:flex-start;text-align:left}
 .word{font-size:34px;font-weight:700;line-height:1.25;word-break:break-word}
@@ -73,22 +114,22 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 24px}
 .src{position:absolute;left:22px;right:22px;bottom:16px;font-size:12px;color:var(--muted)}
 .face.back{padding-bottom:44px}
 .spk{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;
-  border:1px solid var(--line);background:#fff;color:var(--blue);font-size:18px;
+  border:1px solid var(--line);background:var(--card);color:var(--blue);font-size:18px;
   display:grid;place-items:center;cursor:pointer;font-family:inherit;z-index:2}
 .spk:active{background:var(--light);transform:scale(.95)}
 .spk.sm{position:static;width:30px;height:30px;font-size:14px;flex:none}
 .wordline{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .exbox{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);width:100%}
-.exline{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:1.65;color:#333}
+.exline{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:1.65;color:var(--text)}
 .exline span{flex:1}
 .exzh{font-size:13px;color:var(--muted);line-height:1.6;margin-top:5px}
 .answer-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px}
 .answer-btns .btn{padding:14px 0;font-size:15px}
-.b1{background:#FBEAE8;color:var(--red)}
-.b2{background:#FBF1DF;color:var(--amber)}
-.b3{background:#E4F1EA;color:var(--green)}
+.b1{background:var(--r-bg);color:var(--r-fg)}
+.b2{background:var(--a-bg);color:var(--a-fg)}
+.b3{background:var(--g-bg);color:var(--g-fg)}
 /* 底部导航 */
-nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.96);
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--nav);
   backdrop-filter:saturate(180%) blur(12px);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom)}
 .tabs{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
@@ -104,23 +145,23 @@ nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,25
 .item .r{margin-left:auto;text-align:right;font-size:12px;color:var(--muted);white-space:nowrap}
 select:focus,input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,90,136,.12)}
 select,input[type=number],input[type=text]{font-family:inherit;font-size:15px;padding:10px 12px;
-  border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);width:100%}
+  border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);width:100%}
 label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
-.opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
   border-radius:12px;padding:14px 16px;margin-bottom:8px;font-size:15px;cursor:pointer;font-family:inherit;color:var(--text)}
-.opt.ok{background:#E4F1EA;border-color:#9CCDB5;color:var(--green);font-weight:600}
-.opt.no{background:#FBEAE8;border-color:#E8B4AC;color:var(--red)}
+.opt.ok{background:var(--g-bg);border-color:var(--g-line);color:var(--g-fg);font-weight:600}
+.opt.no{background:var(--r-bg);border-color:var(--r-line);color:var(--r-fg)}
 .hidden{display:none!important}
 textarea{width:100%;min-height:170px;font-family:inherit;font-size:15px;line-height:1.75;
-  padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text);resize:vertical}
+  padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);resize:vertical}
 textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,90,136,.12)}
-.passage{font-size:14px;line-height:1.75;background:#F7F9FC;border:1px solid var(--line);
+.passage{font-size:14px;line-height:1.75;background:var(--box);border:1px solid var(--line);
   border-radius:12px;padding:13px 14px;max-height:240px;overflow:auto;margin:8px 0 14px}
-.sect{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--blue);
+.sect{display:inline-block;font-size:12px;font-weight:700;color:var(--btn-fg);background:var(--sect);
   border-radius:6px;padding:2px 8px;margin-bottom:6px}
 .barline{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}
 .barline .lab{width:44px;color:var(--muted)}
-.barline .track{flex:1;height:8px;background:#EDF1F7;border-radius:99px;overflow:hidden}
+.barline .track{flex:1;height:8px;background:var(--track);border-radius:99px;overflow:hidden}
 .barline .track i{display:block;height:100%;background:linear-gradient(90deg,#4C7BB5,#2E5A88)}
 .barline b{width:46px;text-align:right;font-size:13px}
 .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:rgba(28,36,51,.92);
@@ -132,6 +173,16 @@ a{color:var(--blue);text-decoration:none}
 .dl{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
 .dl:last-child{border-bottom:0}
 .dl .ic{width:34px;height:34px;border-radius:9px;background:var(--light);display:grid;place-items:center;font-size:16px}
+.pt{display:inline-block;margin:0 10px 6px 0;color:var(--muted);font-size:13px}
+.pt.on{color:var(--g-fg)}
+.pt.mid{color:var(--a-fg)}
+.srch{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.srch:last-child{border-bottom:0}
+.srch .w{font-weight:700;font-size:16px;flex:none}
+.srch .m{font-size:13px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srch .go{margin-left:auto;flex:none}
+.srch mark{background:rgba(183,121,31,.3);color:inherit;border-radius:3px;padding:0 1px}
+.btn:focus-visible,.opt:focus-visible,.tab:focus-visible,a:focus-visible,.spk:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 @media(max-width:360px){.word{font-size:29px}.grid4{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -193,6 +244,11 @@ a{color:var(--blue);text-decoration:none}
 
 <!-- 学习 -->
 <section class="view" id="v-study">
+  <div class="card" id="searchCard">
+    <div class="between"><b>查词</b><span class="muted small">1765 条 · 中英文都能搜</span></div>
+    <input id="searchInput" type="text" placeholder="输入英文或中文，例如 enroll / 注册" autocomplete="off" autocapitalize="off" spellcheck="false" style="margin-top:10px">
+    <div id="searchResult" class="hidden"></div>
+  </div>
   <div class="card" id="studySetup">
     <b>选择词库</b>
     <div class="grid2" style="margin-top:10px">
@@ -285,6 +341,7 @@ a{color:var(--blue);text-decoration:none}
     <label class="f">模式</label>
     <select id="quizMode">
       <option value="choice">英译中 · 四选一</option>
+      <option value="trans">英译中 · 句子翻译</option>
       <option value="spell">中译英 · 拼写</option>
       <option value="listen">听写 · 听音拼写</option>
     </select>
@@ -293,6 +350,7 @@ a{color:var(--blue);text-decoration:none}
     <label class="f">题量</label>
     <select id="quizSize"><option>10</option><option>20</option><option>30</option></select>
     <button class="btn block" style="margin-top:14px" id="btnQuiz">开始测验</button>
+    <div class="muted small" style="margin-top:8px" id="quizHint">英译中 · 句子翻译：给出英文句子，你写中文，提交后对照参考译文并自评对错。</div>
   </div>
   <div class="card hidden" id="quizBox">
     <div class="between small muted"><span id="qProg"></span><span id="qScore"></span></div>
@@ -334,6 +392,12 @@ a{color:var(--blue);text-decoration:none}
   </div>
   <div class="card">
     <b>设置</b>
+    <label class="f">主题</label>
+    <select id="setTheme">
+      <option value="auto">跟随系统</option>
+      <option value="light">浅色</option>
+      <option value="dark">深色</option>
+    </select>
     <label class="f">发音方式</label>
     <select id="setVoice">
       <option value="auto">自动（系统语音优先，失败用在线音频）</option>
@@ -382,6 +446,8 @@ const INTERVALS = [1, 2, 4, 7, 15, 30, 60];
 const KEY = 'cet4_app_v1';
 
 let state = load();
+if (!state.settings) state.settings = {};
+if (!state.exams) state.exams = {};
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
@@ -556,6 +622,7 @@ $('#btnStartStudy').onclick = () => {
 function startSession(ids, title) {
   if (!ids.length) return toast('没有可学的词');
   S = { ids: [...ids], i: 0, ok: 0, mid: 0, bad: 0, title };
+  $('#searchCard').classList.add('hidden');
   $('#studySetup').classList.add('hidden');
   $('#studySession').classList.remove('hidden');
   go('study'); showCard();
@@ -614,6 +681,7 @@ function finishSession() {
   $('#sBar').style.width = '100%';
   $('#studySession').classList.add('hidden');
   $('#studySetup').classList.remove('hidden');
+  $('#searchCard').classList.remove('hidden');
   renderToday();
   alert(`本轮完成：认识 ${s.ok} · 模糊 ${s.mid} · 不会 ${s.bad}\n不会的词已进入错词本和明日复习。`);
 }
@@ -654,23 +722,53 @@ $('#btnReviewStart').onclick = () => {
 
 /* ---------------- 测验 ---------------- */
 let Q = null;
-$('#btnQuiz').onclick = () => {
+
+const QUIZ_HINT = {
+  choice: '看英文选释义，干扰项来自其他词条的释义。',
+  trans: '给出英文句子，你写中文；提交后对照参考译文、点「译对了 / 译错了」自评，结果会同步进复习进度。',
+  spell: '看中文写英文，拼写必须完全正确。',
+  listen: '听发音拼单词，可点「看提示」拿首字母和中文提示。'
+};
+
+function syncQuizMode() {
+  const mode = $('#quizMode').value;
+  const size = $('#quizSize');
+  const want = mode === 'trans' ? ['5', '10', '15'] : ['10', '20', '30'];
+  if (size.dataset.for !== mode) {
+    size.dataset.for = mode;
+    size.innerHTML = want.map(v => `<option>${v}</option>`).join('');
+  }
+  $('#quizHint').textContent = QUIZ_HINT[mode] || '';
+  $('#btnQuiz').textContent = mode === 'trans' ? '开始翻译练习' : '开始测验';
+}
+$('#quizMode').onchange = syncQuizMode;
+syncQuizMode();
+
+function startQuiz() {
   const mode = $('#quizMode').value;
   const range = $('#quizRange').value;
+  const minPool = mode === 'trans' ? 1 : 4;
   let pool = ALL.filter(c => state.cards[c.id] && state.cards[c.id].seen > 0);
   if (range === 'today' && curPlan) {
     const ids = new Set(idsForDay(DAYNO));
     const t = pool.filter(c => ids.has(c.id));
-    if (t.length >= 4) pool = t;
+    if (t.length >= minPool) pool = t;
   }
-  if (pool.length < 4) return toast('先学几个词再来测验');
+  if (mode === 'trans') {
+    const withEx = pool.filter(c => c.ex);
+    if (withEx.length >= minPool) pool = withEx;
+  }
+  if (pool.length < minPool) {
+    return toast(mode === 'trans' ? '先学几个带例句的词再来翻译' : '先学几个词再来测验');
+  }
   const n = Math.min(+$('#quizSize').value, pool.length);
   const picked = shuffle(pool).slice(0, n);
   Q = { mode, list: picked, i: 0, right: 0, answered: false };
   $('#quizSetup').classList.add('hidden');
   $('#quizBox').classList.remove('hidden');
   nextQ();
-};
+}
+$('#btnQuiz').onclick = startQuiz;
 
 /* ---------- 发音：系统语音优先，失败自动切在线音频 ---------- */
 let VOICES = [];
@@ -835,6 +933,27 @@ document.addEventListener('click', e => {
 
 function shuffle(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
+/* 英译中：参考译文的字面重合度（只作参考，对错由用户自评） */
+const ZH_NOISE = /[的了是在和与也都就而并被把将对从向为上中会要着过之其这那，。；：、？！,.;:?!（）()「」“”"'《》\s]/g;
+const ZH_SPLIT = /[，。；：、？！,.;:?!（）()「」“”"'《》]+/;
+function zhNorm(s) { return String(s || '').replace(ZH_NOISE, ''); }
+function zhGrams(s) {
+  const t = zhNorm(s), set = new Set();
+  for (let i = 0; i < t.length - 1; i++) set.add(t.slice(i, i + 2));
+  return set;
+}
+function zhOverlap(user, ref) {
+  const a = zhGrams(user), b = zhGrams(ref);
+  if (!b.size) return { rate: 0, hit: 0, total: 0 };
+  let hit = 0;
+  b.forEach(g => { if (a.has(g)) hit++; });
+  return { rate: hit / b.size, hit, total: b.size };
+}
+function zhSegments(ref) {
+  return String(ref || '').split(ZH_SPLIT).map(s => s.trim()).filter(s => zhNorm(s).length >= 2);
+}
+function zhLevel(rate) { return rate >= 0.6 ? 'on' : (rate >= 0.35 ? 'mid' : ''); }
+
 function nextQ() {
   if (!Q) return;
   if (Q.i >= Q.list.length) return endQuiz();
@@ -885,12 +1004,76 @@ function nextQ() {
       const right = val === c.w.toLowerCase();
       inpL.disabled = true;
       $('#qBody').insertAdjacentHTML('beforeend',
-        `<div class="card" style="margin-top:12px;background:${right ? '#E4F1EA' : '#FBEAE8'}">
+        `<div class="card" style="margin-top:12px;background:${right ? 'var(--g-bg)' : 'var(--r-bg)'}">
           <div class="wordline"><b>${right ? '正确' : c.w}</b>
           <button class="spk sm" data-say="${c.id}" aria-label="播放读音">🔊</button></div>
           <div class="muted small">${c.cn}</div></div>`);
       recordAnswer(c, right);
       setTimeout(() => { Q.i++; nextQ(); }, right ? 700 : 1500);
+    };
+  } else if (Q.mode === 'trans') {
+    const src = c.ex || c.w;
+    const ref = c.exzh || c.cn;
+    $('#qBody').innerHTML = `
+      <div class="between" style="margin:2px 0 8px">
+        <span class="sect">英译中</span>
+        <button class="spk sm" data-ex="${c.id}" aria-label="播放例句">🔊</button>
+      </div>
+      <div class="passage" style="max-height:none;font-size:15px;line-height:1.75">${src}</div>
+      <textarea id="qTrans" placeholder="写下你的中文译文……" autocapitalize="off" spellcheck="false"></textarea>
+      <div class="between" style="margin-top:8px">
+        <span class="muted small" id="qTransCount">0 字 · Ctrl+Enter 提交</span>
+        <button class="btn sm" id="qTransSubmit">对照参考译文</button>
+      </div>`;
+    const ta = $('#qTrans');
+    const cnt = () => {
+      const t = ta.value.trim().replace(/\s+/g, '');
+      $('#qTransCount').textContent = t.length ? t.length + ' 字 · Ctrl+Enter 提交' : '0 字 · Ctrl+Enter 提交';
+    };
+    ta.oninput = cnt;
+    ta.focus();
+    const submit = () => {
+      if (Q.answered) return;
+      if (ta.value.trim().replace(/\s+/g, '').length < 2) return toast('先写一句再对照');
+      Q.answered = true;
+      ta.disabled = true;
+      $('#qTransSubmit').disabled = true;
+      const ov = zhOverlap(ta.value, ref);
+      const pct = Math.round(ov.rate * 100);
+      const segs = zhSegments(ref).map(s => ({ s, r: zhOverlap(ta.value, s).rate }));
+      const segHtml = segs.length > 1
+        ? `<div class="muted small" style="margin-top:10px">逐句重合度</div>
+           <div style="margin-top:6px">${segs.map(x =>
+             `<span class="pt ${zhLevel(x.r)}">${x.s} · ${Math.round(x.r * 100)}%</span>`).join('')}</div>`
+        : '';
+      const tip = pct >= 50
+        ? '字面重合度不错，意思对上就算对。'
+        : '字面重合度偏低，但你换用了别的说法也可能完全正确——以意思为准。';
+      $('#qBody').insertAdjacentHTML('beforeend', `
+        <div class="card" style="margin-top:12px;background:var(--box)">
+          <div class="between"><span class="muted small">参考译文</span>
+            <span class="badge ${pct >= 60 ? 'g' : (pct >= 35 ? 'a' : '')}">字面重合 ${pct}%</span></div>
+          <div style="font-weight:600;margin:6px 0 2px;line-height:1.75">${ref}</div>
+          ${segHtml}
+          <div class="muted small" style="margin-top:12px">${tip}</div>
+          <div class="muted small" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)">
+            自己判一下，判定会同步进复习进度。
+          </div>
+          <div class="grid2" style="margin-top:8px">
+            <button class="btn b1 sm" id="qTransNo">译错了</button>
+            <button class="btn b3 sm" id="qTransYes">译对了</button>
+          </div>
+        </div>`);
+      const judge = ok => {
+        recordAnswer(c, ok);
+        setTimeout(() => { Q.i++; nextQ(); }, ok ? 420 : 700);
+      };
+      $('#qTransYes').onclick = () => judge(true);
+      $('#qTransNo').onclick = () => judge(false);
+    };
+    $('#qTransSubmit').onclick = submit;
+    ta.onkeydown = e => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); submit(); }
     };
   } else {
     $('#qBody').innerHTML = `<div style="font-size:20px;font-weight:600;margin:6px 0 14px">${c.cn}</div>
@@ -904,7 +1087,7 @@ function nextQ() {
       const right = val === c.w.toLowerCase();
       inp.disabled = true;
       $('#qBody').insertAdjacentHTML('beforeend',
-        `<div class="card" style="margin-top:12px;background:${right ? '#E4F1EA' : '#FBEAE8'}">
+        `<div class="card" style="margin-top:12px;background:${right ? 'var(--g-bg)' : 'var(--r-bg)'}">
           <div class="wordline"><b>${right ? '正确' : '答案：' + c.w}</b>
           <button class="spk sm" data-say="${c.id}" aria-label="播放读音">🔊</button></div>
           <div class="muted small">${c.cn}</div></div>`);
@@ -931,8 +1114,16 @@ function endQuiz() {
   box.innerHTML = `<div style="text-align:center;padding:10px 0">
     <div style="font-size:40px;font-weight:800;color:var(--navy)">${Math.round(r / n * 100)}%</div>
     <div class="muted">${r} / ${n} 正确</div>
-    <button class="btn block" style="margin-top:16px" onclick="location.reload()">再来一组</button>
+    <div class="grid2" style="margin-top:16px">
+      <button class="btn line sm" id="qBackSetup">返回设置</button>
+      <button class="btn sm" id="qAgain">再来一组</button>
+    </div>
   </div>`;
+  $('#qAgain').onclick = () => { $('#qBody').innerHTML = ''; startQuiz(); };
+  $('#qBackSetup').onclick = () => {
+    $('#quizBox').classList.add('hidden');
+    $('#quizSetup').classList.remove('hidden');
+  };
   Q = null;
 }
 
@@ -1018,12 +1209,100 @@ $('#btnVoiceHelp').onclick = () => {
   alert(lines.join(String.fromCharCode(10)));
 };
 
+/* ---------------- 主题 ---------------- */
+function currentTheme() { return (state.settings && state.settings.theme) || 'auto'; }
+function isDarkNow() {
+  const t = currentTheme();
+  if (t !== 'auto') return t === 'dark';
+  try { return !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); } catch (e) { return false; }
+}
+function applyTheme() {
+  const t = currentTheme();
+  const root = document.documentElement;
+  if (t === 'auto') root.removeAttribute('data-theme');
+  else root.setAttribute('data-theme', t);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', isDarkNow() ? '#111620' : '#1F3864');
+  const sel = $('#setTheme');
+  if (sel) sel.value = t;
+}
+$('#setTheme').onchange = e => {
+  state.settings.theme = e.target.value;
+  save(); applyTheme();
+};
+try {
+  if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (currentTheme() === 'auto') applyTheme();
+  });
+} catch (e) {}
+
+/* ---------------- 查词 ---------------- */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+}
+function markHit(text, q) {
+  const s = String(text == null ? '' : text);
+  if (!q) return esc(s);
+  const i = s.toLowerCase().indexOf(q.toLowerCase());
+  if (i < 0) return esc(s);
+  return esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + q.length)) + '</mark>' + esc(s.slice(i + q.length));
+}
+function renderSearch() {
+  const box = $('#searchResult');
+  if (!box) return;
+  const q = $('#searchInput').value.trim();
+  if (!q) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+  const ql = q.toLowerCase();
+  let list = ALL.filter(c =>
+    (c.w && String(c.w).toLowerCase().indexOf(ql) !== -1) ||
+    (c.cn && String(c.cn).indexOf(q) !== -1) ||
+    (c.ex && String(c.ex).toLowerCase().indexOf(ql) !== -1));
+  list.sort((a, b) => {
+    const pa = String(a.w).toLowerCase().startsWith(ql) ? 0 : 1;
+    const pb = String(b.w).toLowerCase().startsWith(ql) ? 0 : 1;
+    return pa - pb || String(a.w).length - String(b.w).length;
+  });
+  const total = list.length;
+  box.classList.remove('hidden');
+  if (!total) {
+    box.innerHTML = '<div class="muted small" style="padding:12px 0">没找到，换个词试试。</div>';
+    return;
+  }
+  box.innerHTML = list.slice(0, 40).map(c => `
+    <div class="srch">
+      <span class="w">${markHit(c.w, q)}</span>
+      <span class="m">${c.pos ? esc(c.pos) + ' ' : ''}${markHit(c.cn, q)}</span>
+      <span class="go"><button class="spk sm" data-say="${c.id}" aria-label="播放读音">🔊</button>
+      <button class="btn sm" data-learn="${c.id}">学</button></span>
+    </div>`).join('') +
+    `<div class="muted small" style="padding:10px 0 0">${total > 40 ? `共 ${total} 条，显示前 40 条` : `共 ${total} 条`}</div>`;
+  $$('[data-learn]').forEach(b => b.onclick = () => {
+    const id = +b.dataset.learn;
+    $('#searchInput').value = '';
+    box.classList.add('hidden');
+    box.innerHTML = '';
+    startSession([id], '查词');
+  });
+}
+$('#searchInput').oninput = renderSearch;
+$('#searchInput').onkeydown = e => { if (e.key === 'Escape') { e.target.value = ''; renderSearch(); } };
+
 /* ---------------- 初始化 ---------------- */
 fillRanges();
+applyTheme();
 renderToday();
 if ('speechSynthesis' in window) {
   speechSynthesis.getVoices();
   speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+/* PWA：离线缓存与「添加到主屏幕」 */
+if ('serviceWorker' in navigator) {
+  const local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (location.protocol === 'https:' || local) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
 }
 $('#hdSub').textContent = DAYNO >= 1 && DAYNO <= 49 ? `D${DAYNO} · 距考试 ${Math.max(0, diffDays(TODAY, EXAM))} 天` : '';
 
@@ -1125,11 +1404,11 @@ function showTopicResult(T, kind, text, model, phrases, traps) {
   const label = kind === 'writing' ? '参考范文' : '参考译文';
   const phraseTitle = kind === 'writing' ? '高分表达' : '关键表达';
   $('#topicBox').innerHTML = `
-    <div class="card" style="background:#F7F9FC">
+    <div class="card" style="background:var(--box)">
       <b>${label}</b>
       <div class="small" style="white-space:pre-wrap;line-height:1.8;margin-top:8px">${model}</div>
     </div>
-    <div class="card" style="background:#FFF7E6">
+    <div class="card" style="background:var(--a-bg)">
       <b>${phraseTitle}</b>
       <div class="small" style="margin-top:6px;line-height:1.9">${phrases.map(p => '· ' + p).join('<br>')}</div>
     </div>
@@ -1299,7 +1578,7 @@ function finishExam() {
       ${extraLine}<br>
       预估区间 <b>${Math.max(0, est - 30)}–${est + 30}</b>
     </div>
-    <div class="card" style="margin-top:12px;background:#FFF7E6">
+    <div class="card" style="margin-top:12px;background:var(--a-bg)">
       <b>下一步</b><div class="small" style="margin-top:4px">${advice(L, R, V)}</div>
     </div>
     <details class="card" style="margin-top:12px">
