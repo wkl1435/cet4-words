@@ -1,0 +1,57 @@
+# 密钥与凭据：绝不能进仓库
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+.netrc
+.npmrc
+.pypirc
+credentials.json
+*token*.txt
+*secret*
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# 依赖与构建产物
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+dist/
+build/
+.cache/
+
+# 临时与调试
+*.log
+*.tmp
+*.bak
+*.orig
+*.rej
+tmp/
+temp/
+.cet4check/
+
+# Python（仓库里的 docx/xlsx 是成品，不需要生成脚本的中间产物）
+__pycache__/
+*.pyc
+.venv/
+venv/
